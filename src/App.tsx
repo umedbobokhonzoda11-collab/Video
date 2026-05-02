@@ -8,11 +8,14 @@ import { GalleryItem } from './types';
 
 export default function App() {
   const [userItems, setUserItems] = useState<GalleryItem[]>([]);
-  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [currentSoundMode, setCurrentSoundMode] = useState('Стандарт');
 
+  // Unified list of all items for the reels
+  const allItems = [...userItems, ...CATEGORIES.flatMap(c => c.items)];
+
   useEffect(() => {
-    if (selectedItem) {
+    if (selectedIndex !== -1) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -20,7 +23,7 @@ export default function App() {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [selectedItem]);
+  }, [selectedIndex]);
 
   const handleFilesSelected = (files: FileList) => {
     const newItems: GalleryItem[] = Array.from(files).map((file, index) => {
@@ -46,7 +49,8 @@ export default function App() {
   };
 
   const handleItemClick = (item: GalleryItem, soundMode: string) => {
-    setSelectedItem(item);
+    const index = allItems.findIndex(i => i.id === item.id);
+    setSelectedIndex(index);
     setCurrentSoundMode(soundMode);
   };
 
@@ -95,8 +99,9 @@ export default function App() {
       </main>
 
       <FullScreenModal 
-        item={selectedItem} 
-        onClose={() => setSelectedItem(null)} 
+        items={allItems} 
+        initialIndex={selectedIndex}
+        onClose={() => setSelectedIndex(-1)} 
         soundMode={currentSoundMode}
       />
 
