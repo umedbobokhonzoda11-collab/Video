@@ -9,6 +9,10 @@ interface ItemCardProps {
 
 export default function ItemCard({ item }: ItemCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [soundMode, setSoundMode] = useState('Стандарт');
+
+  const soundModes = ['Стандарт', 'В зал', 'Телефон', 'Кино', 'Консерт'];
 
   return (
     <div
@@ -38,15 +42,41 @@ export default function ItemCard({ item }: ItemCardProps) {
             exit={{ opacity: 0, scale: 0.8 }}
             className="absolute -top-[25%] left-0 z-10 w-full min-w-[260px] overflow-hidden rounded-md bg-[#181818] shadow-2xl"
           >
-            <div className="h-36 w-full relative bg-black">
+            <div 
+              className="h-36 w-full relative bg-black cursor-pointer group/video"
+              onClick={(e) => {
+                const video = e.currentTarget.querySelector('video');
+                if (video) {
+                  if (video.paused) {
+                    video.play();
+                    setIsPlaying(true);
+                  } else {
+                    video.pause();
+                    setIsPlaying(false);
+                  }
+                }
+              }}
+            >
               {item.type === 'video' ? (
-                <video 
-                  src={item.fileUrl} 
-                  className="h-full w-full object-cover" 
-                  autoPlay 
-                  muted 
-                  loop
-                />
+                <>
+                  <video 
+                    src={item.fileUrl} 
+                    className="h-full w-full object-cover" 
+                    autoPlay 
+                    muted 
+                    loop
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover/video:opacity-100 transition-opacity">
+                    {isPlaying ? (
+                      <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
+                        <div className="h-6 w-1 bg-white mx-0.5 inline-block" />
+                        <div className="h-6 w-1 bg-white mx-0.5 inline-block" />
+                      </div>
+                    ) : (
+                      <Play className="h-8 w-8 text-white fill-current" />
+                    )}
+                  </div>
+                </>
               ) : (
                 <img
                   src={item.thumbnail}
@@ -87,6 +117,30 @@ export default function ItemCard({ item }: ItemCardProps) {
                 <span className="h-1 w-1 rounded-full bg-gray-500" />
                 <span>{item.year}</span>
               </div>
+
+              {item.type === 'video' && (
+                <div className="pt-2 border-t border-gray-800">
+                  <p className="text-[10px] text-gray-500 mb-1 uppercase font-bold">Намуди садо:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {soundModes.map((mode) => (
+                      <button
+                        key={mode}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSoundMode(mode);
+                        }}
+                        className={`text-[9px] px-2 py-0.5 rounded border transition-colors ${
+                          soundMode === mode 
+                            ? 'bg-white text-black border-white' 
+                            : 'bg-transparent text-gray-400 border-gray-600 hover:border-gray-400'
+                        }`}
+                      >
+                        {mode}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
