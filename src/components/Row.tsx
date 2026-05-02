@@ -6,9 +6,10 @@ import ItemCard from './ItemCard';
 interface RowProps {
   title: string;
   items: GalleryItem[];
+  onItemClick?: (item: GalleryItem, soundMode: string) => void;
 }
 
-export default function Row({ title, items }: RowProps) {
+export default function Row({ title, items, onItemClick }: RowProps) {
   const rowRef = useRef<HTMLDivElement>(null);
   const [isMoved, setIsMoved] = useState(false);
 
@@ -40,7 +41,11 @@ export default function Row({ title, items }: RowProps) {
           className="flex items-center gap-2 overflow-x-scroll scrollbar-hide"
         >
           {items.map((item) => (
-            <ItemCard key={item.id} item={item} />
+            <ItemCard 
+              key={item.id} 
+              item={item} 
+              onClick={(soundMode) => onItemClick?.(item, soundMode)} 
+            />
           ))}
         </div>
 

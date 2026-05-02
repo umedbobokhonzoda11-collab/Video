@@ -12,4 +12,24 @@ export const FEATURED_ITEM: GalleryItem = {
   isNew: true
 };
 
-export const CATEGORIES: GalleryCategory[] = [];
+export const CATEGORIES: GalleryCategory[] = [
+  {
+    id: 'sample',
+    name: 'Намуна барои санҷиши садо',
+    items: [
+      {
+        id: 'sample-video-1',
+        title: 'Табиати Зебо (бо садо)',
+        description: 'Ин видео дорои садои табиат аст. Шумо метавонед намудҳои садоро дар ин ҷо санҷед.',
+        thumbnail: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=800',
+        fileUrl: 'https://vjs.zencdn.net/v/oceans.mp4',
+        category: 'Намуна',
+        rating: '100%',
+        duration: '00:46',
+        year: '2024',
+        type: 'video',
+        isNew: true
+      }
+    ]
+  }
+];

@@ -1,13 +1,14 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { GalleryItem } from '../types';
-import { Play, Plus, ThumbsUp, ChevronDown } from 'lucide-react';
+import { Play, Plus, ThumbsUp, ChevronDown, Volume2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface ItemCardProps {
   item: GalleryItem;
+  onClick?: (soundMode: string) => void;
 }
 
-export default function ItemCard({ item }: ItemCardProps) {
+export default function ItemCard({ item, onClick }: ItemCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [soundMode, setSoundMode] = useState('Стандарт');
@@ -19,6 +20,7 @@ export default function ItemCard({ item }: ItemCardProps) {
       className="relative h-28 min-w-[180px] cursor-pointer transition-all duration-200 md:h-36 md:min-w-[240px]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => onClick?.(soundMode)}
     >
       {item.type === 'video' ? (
         <div className="absolute inset-0 bg-gray-800 flex items-center justify-center rounded-sm">
@@ -63,7 +65,7 @@ export default function ItemCard({ item }: ItemCardProps) {
                     src={item.fileUrl} 
                     className="h-full w-full object-cover" 
                     autoPlay 
-                    muted 
+                    muted
                     loop
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover/video:opacity-100 transition-opacity">
@@ -120,25 +122,18 @@ export default function ItemCard({ item }: ItemCardProps) {
 
               {item.type === 'video' && (
                 <div className="pt-2 border-t border-gray-800">
-                  <p className="text-[10px] text-gray-500 mb-1 uppercase font-bold">Намуди садо:</p>
-                  <div className="flex flex-wrap gap-1">
-                    {soundModes.map((mode) => (
-                      <button
-                        key={mode}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSoundMode(mode);
-                        }}
-                        className={`text-[9px] px-2 py-0.5 rounded border transition-colors ${
-                          soundMode === mode 
-                            ? 'bg-white text-black border-white' 
-                            : 'bg-transparent text-gray-400 border-gray-600 hover:border-gray-400'
-                        }`}
-                      >
-                        {mode}
-                      </button>
-                    ))}
-                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const currentIndex = soundModes.indexOf(soundMode);
+                      const nextIndex = (currentIndex + 1) % soundModes.length;
+                      setSoundMode(soundModes[nextIndex]);
+                    }}
+                    className="flex items-center gap-2 text-[10px] px-3 py-1 rounded border border-gray-600 bg-white/10 text-white hover:bg-white/20 transition-colors w-full justify-center"
+                  >
+                    <Volume2 className="h-3 w-3" />
+                    Садо: {soundMode}
+                  </button>
                 </div>
               )}
             </div>
